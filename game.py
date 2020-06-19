@@ -29,9 +29,9 @@ class Game:
                 self.playerTurn = not self.playerTurn
             else:
                 print("Computer turn")
-                if self.winning_move():
+                if self.necessary_move(self.computer_symbol):
                     pass
-                elif self.block_move():
+                elif self.necessary_move(self.player_symbol):
                     pass
                 else:  # Make the optimal move
                     self.optimal_move()
@@ -72,71 +72,37 @@ class Game:
         # Otherwise, nobody has won yet
         return False
 
-    def winning_move(self):
-        # Find a winning move in any row, if any
+    # If it has a winning move, play it
+    # If the player has a winning move, then block it.
+    def necessary_move(self, check_symbol):
+        # Find the computer's or block the player's winning move in any row, if any
         for row_num, row in enumerate(self.board):
-            if row.count(self.computer_symbol) == self.GRID_SIZE-1:
+            if row.count(check_symbol) == self.GRID_SIZE-1:
                 q = next((index for index, value in enumerate(row) if value == "-"), None)
                 if q:
                     self.board[row_num][q] = self.computer_symbol
                     return True
 
-        # Find a winning move in any column, if any
+        # Find the computer's or block the player's winning move in any col, if any
         for i in range(self.GRID_SIZE):  # for each column number
             cols = [row[i] for row in self.board]
-            if cols.count(self.computer_symbol) == self.GRID_SIZE-1:
+            if cols.count(check_symbol) == self.GRID_SIZE-1:
                 q = next((index for index, value in enumerate(cols) if value == "-"), None)
                 if q:
                     self.board[q][i] = self.computer_symbol
                     return True
 
-        # Find a winning move in diag from top left to bottom right, if any
+        # Find the computer's or block the player's winning move in top-left to bottom-right diag, if any
         tl_br_diags = [self.board[i][i] for i in range(self.GRID_SIZE)]
-        if tl_br_diags.count(self.computer_symbol) == self.GRID_SIZE-1:
+        if tl_br_diags.count(check_symbol) == self.GRID_SIZE-1:
             q = next((index for index, value in enumerate(tl_br_diags) if value == "-"), None)
             if q:
                 self.board[q][q] = self.computer_symbol
                 return True
 
-        # Find a winning move in diag from bottom left to top right, if any
+        # Find the computer's or block the player's winning move in bottom-left to top-right diag, if any
         bl_tr_diags = [self.board[self.GRID_SIZE - i - 1][i] for i in range(self.GRID_SIZE)]
-        if bl_tr_diags.count(self.computer_symbol) == self.GRID_SIZE-1:
-            q = next((index for index, value in enumerate(bl_tr_diags) if value == "-"), None)
-            if q:
-                self.board[self.GRID_SIZE-1-q][q] = self.computer_symbol
-                return True
-
-        return False
-
-    def block_move(self):
-        # Block the player's winning move in any row, if any
-        for row_num, row in enumerate(self.board):
-            if row.count(self.player_symbol) == self.GRID_SIZE-1:
-                q = next((index for index, value in enumerate(row) if value == "-"), None)
-                if q:
-                    self.board[row_num][q] = self.computer_symbol
-                    return True
-
-        # Block the player's winning move in any col, if any
-        for i in range(self.GRID_SIZE):  # for each column number
-            cols = [row[i] for row in self.board]
-            if cols.count(self.player_symbol) == self.GRID_SIZE-1:
-                q = next((index for index, value in enumerate(cols) if value == "-"), None)
-                if q:
-                    self.board[q][i] = self.computer_symbol
-                    return True
-
-        # Block the player's winning move in top-left to bottom-right diag, if any
-        tl_br_diags = [self.board[i][i] for i in range(self.GRID_SIZE)]
-        if tl_br_diags.count(self.player_symbol) == self.GRID_SIZE-1:
-            q = next((index for index, value in enumerate(tl_br_diags) if value == "-"), None)
-            if q:
-                self.board[q][q] = self.computer_symbol
-                return True
-
-        # Block the player's winning move in bottom-left to top-right diag, if any
-        bl_tr_diags = [self.board[self.GRID_SIZE - i - 1][i] for i in range(self.GRID_SIZE)]
-        if bl_tr_diags.count(self.player_symbol) == self.GRID_SIZE-1:
+        if bl_tr_diags.count(check_symbol) == self.GRID_SIZE-1:
             q = next((index for index, value in enumerate(bl_tr_diags) if value == "-"), None)
             if q:
                 self.board[self.GRID_SIZE-1-q][q] = self.computer_symbol
@@ -170,5 +136,5 @@ class Game:
                 break
 
 
-g = Game("X", 4)
+g = Game("O", 3)
 g.play()
